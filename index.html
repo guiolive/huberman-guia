@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Biblioteca de estudos</title>
-<meta name="description" content="Biblioteca de guias visuais de estudo — neurociência aplicada.">
+<meta name="description" content="Biblioteca editável de guias visuais de estudo.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,7 +12,7 @@
 
 <style>
 /* ============================================================
-   TOKENS — tema editorial (creme + serifa) e acentos funcionais
+   TOKENS, tema editorial (creme + serifa) e acentos funcionais
    ============================================================ */
 :root{
   --bg:#F7F4EC;
@@ -25,10 +25,10 @@
   --accent:#1A8917;
 
   /* 4 cores funcionais em versão terrosa/dessaturada */
-  --f-key:#6E5A8F;    /* roxo  — ideia-chave / marcação  */
-  --f-apply:#A8632E;  /* ocre  — aplicar / alerta        */
-  --f-focus:#3E7D74;  /* verde-azulado — foco / termo    */
-  --f-warn:#A85570;   /* argila-rosa — cuidado / dopamina*/
+  --f-key:#6E5A8F;    /* roxo, ideia-chave / marcação  */
+  --f-apply:#A8632E;  /* ocre, aplicar / alerta        */
+  --f-focus:#3E7D74;  /* verde-azulado, foco / termo   */
+  --f-warn:#A85570;   /* argila-rosa, cuidado / dopamina*/
 
   --serif-display:'Fraunces', Georgia, 'Times New Roman', serif;
   --serif-body:'Source Serif 4', Georgia, serif;
@@ -65,8 +65,14 @@ body{
   display:block; font-family:var(--sans); font-weight:500; font-size:.7rem;
   letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-top:6px;
 }
+.new-btn{
+  width:100%; margin:20px 0 4px; padding:10px 14px; font-family:var(--sans);
+  font-weight:600; font-size:.85rem; color:var(--surface); background:var(--btn);
+  border:none; border-radius:999px; cursor:pointer;
+}
+.new-btn:hover{opacity:.9}
 .search{
-  width:100%; margin:22px 0 18px; padding:9px 12px; font-family:var(--sans);
+  width:100%; margin:16px 0 18px; padding:9px 12px; font-family:var(--sans);
   font-size:.85rem; color:var(--ink); background:var(--surface);
   border:1px solid var(--rule); border-radius:999px; outline:none;
 }
@@ -105,10 +111,15 @@ body{
 .chapter.active{display:block; animation:fade .35s ease both}
 @keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
 
+/* barra de ações por capítulo (CRUD) */
+.ch-actions{display:flex; gap:8px; margin:0 0 26px; flex-wrap:wrap}
+.ch-actions button{font-family:var(--sans); font-size:.75rem; font-weight:500; color:var(--muted); background:var(--surface); border:1px solid var(--rule); border-radius:999px; padding:5px 12px; cursor:pointer; line-height:1.2}
+.ch-actions button:hover{color:var(--title); border-color:var(--muted)}
+.ch-actions .danger:hover{color:var(--f-warn); border-color:var(--f-warn)}
+
 .ch-kicker{font-family:var(--sans); font-size:.72rem; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin:0 0 18px}
 .chapter h1{font-family:var(--serif-display); font-weight:700; font-size:clamp(2.3rem,5vw,3.4rem); line-height:1.05; letter-spacing:-.025em; color:var(--title); margin:0 0 .4em}
-.ch-sub{font-family:var(--sans); font-weight:400; font-size:1.2rem; line-height:1.5; color:var(--muted); margin:0 0 26px}
-.ch-meta{font-family:var(--sans); font-size:.78rem; letter-spacing:.04em; color:var(--muted); padding-bottom:26px; margin:0 0 34px; border-bottom:1px solid var(--rule)}
+.ch-sub{font-family:var(--sans); font-weight:400; font-size:1.2rem; line-height:1.5; color:var(--muted); margin:0 0 34px; padding-bottom:26px; border-bottom:1px solid var(--rule)}
 
 .chapter h2{font-family:var(--serif-display); font-weight:600; font-size:1.7rem; letter-spacing:-.015em; color:var(--title); margin:2.4em 0 .3em; line-height:1.2}
 .chapter h3{font-family:var(--serif-display); font-weight:600; font-size:1.15rem; color:var(--title); margin:1.6em 0 .3em}
@@ -142,7 +153,7 @@ hr{border:none; border-top:1px solid var(--rule); margin:2.4em 0}
 .callout.term{border-left-color:var(--f-focus)} .callout.term .c-label{color:var(--f-focus)}
 .callout.warn{border-left-color:var(--f-warn)} .callout.warn .c-label{color:var(--f-warn)}
 
-/* ---- stats: cartões de números-chave (o artefato principal) ---- */
+/* ---- stats: cartões de números-chave ---- */
 .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin:1.8em 0}
 .stat{padding:20px 18px; background:var(--surface); border:1px solid var(--rule); border-radius:8px}
 .stat .n{font-family:var(--serif-display); font-weight:700; font-size:2.1rem; line-height:1; letter-spacing:-.02em; color:var(--title)}
@@ -224,6 +235,44 @@ hr{border:none; border-top:1px solid var(--rule); margin:2.4em 0}
 .sources .s-t{color:var(--ink); font-weight:600}
 .sources a{color:var(--title)}
 
+/* ---- estado vazio ---- */
+.empty-state{text-align:center; padding:90px 0; color:var(--muted)}
+.empty-state h2{font-family:var(--serif-display); font-weight:700; font-size:1.8rem; color:var(--title); border:none; margin:0 0 10px}
+.empty-state p{margin:0 0 4px}
+
+/* ============================================================
+   EDITOR (CRUD)
+   ============================================================ */
+.editor-back{display:none; position:fixed; inset:0; background:rgba(25,25,25,.4); z-index:70}
+.editor-back.show{display:block}
+.editor{
+  display:none; position:fixed; z-index:71; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:min(760px,94vw); max-height:92vh; background:var(--bg); border:1px solid var(--rule);
+  border-radius:12px; box-shadow:0 20px 60px rgba(25,25,25,.25); flex-direction:column; overflow:hidden;
+}
+.editor.show{display:flex}
+.ed-head{display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--rule)}
+.ed-head .ed-mode{font-family:var(--serif-display); font-weight:700; font-size:1.15rem; color:var(--title)}
+.ed-x{font-family:var(--sans); font-size:.8rem; background:none; border:1px solid var(--rule); border-radius:999px; padding:6px 12px; color:var(--ink); cursor:pointer}
+.ed-x:hover{border-color:var(--muted)}
+.ed-fields{padding:18px 20px; overflow-y:auto}
+.ed-fields label{display:block; font-family:var(--sans); font-size:.72rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin:0 0 14px}
+.ed-fields input{display:block; width:100%; margin-top:6px; padding:9px 12px; font-family:var(--serif-body); font-size:1rem; color:var(--ink); background:var(--surface); border:1px solid var(--rule); border-radius:8px; text-transform:none; letter-spacing:normal; font-weight:400}
+.ed-fields input:focus{outline:none; border-color:var(--muted)}
+.ed-row{display:grid; grid-template-columns:120px 1fr; gap:14px}
+.ed-toolbar{display:flex; flex-wrap:wrap; gap:6px; margin:4px 0 0}
+.ed-toolbar button{font-family:var(--sans); font-size:.78rem; color:var(--ink); background:var(--surface); border:1px solid var(--rule); border-radius:6px; padding:5px 9px; cursor:pointer}
+.ed-toolbar button:hover{border-color:var(--muted)}
+.ed-body{margin-top:10px; min-height:220px; max-height:44vh; overflow-y:auto; padding:16px 18px; background:var(--surface); border:1px solid var(--rule); border-radius:8px; font-family:var(--serif-body); font-size:1rem; line-height:1.6; color:var(--ink)}
+.ed-body:focus{outline:none; border-color:var(--muted)}
+.ed-body:empty:before{content:attr(data-ph); color:var(--muted)}
+.ed-foot{display:flex; align-items:center; gap:10px; padding:14px 20px; border-top:1px solid var(--rule)}
+.ed-foot .spacer{flex:1}
+.ed-save{font-family:var(--sans); font-weight:600; font-size:.85rem; color:var(--surface); background:var(--btn); border:none; border-radius:999px; padding:9px 20px; cursor:pointer}
+.ed-save:hover{opacity:.9}
+.ed-del{font-family:var(--sans); font-size:.82rem; color:var(--f-warn); background:none; border:1px solid var(--rule); border-radius:999px; padding:8px 14px; cursor:pointer}
+.ed-del:hover{border-color:var(--f-warn)}
+
 /* ============================================================
    RESPONSIVO
    ============================================================ */
@@ -259,344 +308,483 @@ hr{border:none; border-top:1px solid var(--rule); margin:2.4em 0}
 <div class="shell">
 
   <aside class="side" id="side">
-    <a href="#" class="brand">Biblioteca<small>Guias visuais de estudo</small></a>
+    <a href="#" class="brand" id="brand">Biblioteca<small>Guias visuais de estudo</small></a>
+    <button class="new-btn" id="newBtn">+ Novo capítulo</button>
     <input class="search" id="search" type="search" placeholder="Buscar capítulo…" aria-label="Buscar capítulo">
     <p class="side-label">Capítulos</p>
     <ul class="toc" id="toc"></ul>
   </aside>
 
   <main class="main">
-    <div class="reader" id="reader">
-
-      <!-- ============================================================
-           CAPÍTULO 01 — Neuroplasticidade
-           ============================================================ -->
-      <article class="chapter" id="cap-01"
-               data-num="01" data-title="Neuroplasticidade" data-tag="Foco &amp; atenção">
-        <p class="ch-kicker">Neurociência · Parte I</p>
-        <h1>Neuroplasticidade</h1>
-        <p class="ch-sub">O cérebro adulto muda — mas, depois dos ~25 anos, só sob um conjunto químico preciso.</p>
-        <p class="ch-meta">8 seções · guia visual</p>
-
-        <div class="equation" aria-label="A fórmula química da plasticidade">
-          <div class="terms">
-            <div class="term"><span class="tt k-alerta">Alerta</span><span class="nm">Epinefrina</span><span class="sr">Locus coeruleus</span></div>
-            <div class="op">+</div>
-            <div class="term"><span class="tt k-foco">Foco</span><span class="nm">Acetilcolina</span><span class="sr">Tronco encefálico</span></div>
-            <div class="op">+</div>
-            <div class="term"><span class="tt k-marca">Marcação</span><span class="nm">Acetilcolina</span><span class="sr">Núcleo basal</span></div>
-          </div>
-          <p class="result">→ o cérebro adulto não só <em>pode</em> como <em>precisa</em> mudar</p>
-        </div>
-
-        <h2>01 · O que muda — e o que não</h2>
-        <p class="lead">Nem todo circuito é plástico. E isso é uma vantagem.</p>
-        <div class="duo">
-          <div class="d-card plastic">
-            <span class="d-badge">Plástico — muda</span>
-            <h4>Mapa do mundo</h4>
-            <p>Áreas visuais, auditivas e olfativas. A experiência remodela o mapa a vida toda.</p>
-          </div>
-          <div class="d-card fixed">
-            <span class="d-badge">Fixo — confiável</span>
-            <h4>Funções vitais</h4>
-            <p>Batimento, respiração, digestão. Projetados para não se alterar.</p>
-          </div>
-        </div>
-        <div class="stats">
-          <div class="stat apply"><div class="n">~25<small> anos</small></div><div class="l">até aí a mudança é quase passiva; depois, exige foco deliberado</div></div>
-          <div class="stat key"><div class="n">0</div><div class="l">neurônios novos, na prática — a mudança fortalece ou poda conexões existentes</div></div>
-        </div>
-        <div class="callout key">
-          <p class="c-label">Nota</p>
-          <p>A neurogênese no hipocampo adulto ainda é <strong>debate ativo</strong> na literatura — trate o “zero” como aproximação prática.</p>
-        </div>
-
-        <h2>02 · O córtex é um mapa da experiência</h2>
-        <p class="lead">Quando um sentido falta, o território é reaproveitado.</p>
-        <div class="facts">
-          <div class="f-row"><div class="f-lab">Evidência</div><div class="f-val">Em pessoas cegas de nascença, o <span class="k-foco">córtex occipital</span> (“visual”) passa a processar <strong>audição e tato</strong> — como no Braille.</div></div>
-          <div class="f-row"><div class="f-lab">Efeito</div><div class="f-val">Acuidade auditiva e tátil muito superiores; incidência muito maior de <strong>ouvido absoluto</strong>.</div></div>
-          <div class="f-row"><div class="f-lab">Conclusão</div><div class="f-val">Não há “mapa padrão”. O córtex é um mapa <strong>personalizado</strong> do corpo e da vida de cada um.</div></div>
-        </div>
-
-        <h2>03 · Consciência é o passo zero</h2>
-        <p class="lead">Reconhecer que você quer mudar algo já inicia o processo.</p>
-        <p>Trazer algo para a consciência sinaliza ao <span class="k-marca">córtex pré-frontal</span> que aquilo merece atenção — e deixa de ser automático.</p>
-        <div class="callout warn">
-          <p class="c-label">Mito derrubado</p>
-          <p>“Toda experiência muda seu cérebro” é <strong>falso</strong> no adulto. Só muda aquilo a que você presta <strong>atenção seletiva</strong> — e só para aquela experiência.</p>
-        </div>
-
-        <h2>04 · A descoberta: atenção reconfigura o adulto</h2>
-        <p class="lead">Recanzone &amp; Merzenich (UCSF) provaram que o cérebro adulto é plástico.</p>
-        <div class="facts">
-          <div class="f-row"><div class="f-lab">Sujeitos</div><div class="f-val">Macacos-coruja <strong>adultos</strong> — fora do “período crítico” da infância.</div></div>
-          <div class="f-row"><div class="f-lab">Tarefa</div><div class="f-val">Detectar diferenças sutis numa <strong>vibração tátil</strong> num pontinho do dedo — exigia atenção.</div></div>
-          <div class="f-row"><div class="f-lab">Resultado</div><div class="f-val">O mapa cortical do dedo treinado (área <strong>3b</strong>) se expandiu junto com a melhora.</div></div>
-          <div class="f-row"><div class="f-lab">Controle</div><div class="f-val">Com o mesmo toque, mas atenção num <strong>som</strong>, a plasticidade ia para o córtex <strong>auditivo</strong>.</div></div>
-        </div>
-        <div class="callout term">
-          <p class="c-label">A lição</p>
-          <p>Não é a experiência que muda o cérebro — é a experiência <strong>à qual você presta atenção</strong>.</p>
-        </div>
-
-        <h2>05 · Os três ingredientes químicos</h2>
-        <p class="lead">A plasticidade depende de três neuromoduladores liberados juntos.</p>
-        <div class="steps">
-          <div class="step"><div class="st-n">1</div><div>
-            <h4 class="k-alerta">Epinefrina — alerta</h4>
-            <p>Do <strong>locus coeruleus</strong>. Sem alerta, nada acontece.</p>
-          </div></div>
-          <div class="step"><div class="st-n">2</div><div>
-            <h4 class="k-foco">Acetilcolina (tronco) — holofote</h4>
-            <p>Age no <strong>tálamo</strong> e aumenta a relação sinal-ruído: destaca “um grito na multidão”.</p>
-          </div></div>
-          <div class="step"><div class="st-n">3</div><div>
-            <h4 class="k-marca">Acetilcolina (núcleo basal) — marcação</h4>
-            <p>Do <strong>núcleo basal de Meynert</strong>. É o que faltava: consolida o que foi destacado.</p>
-          </div></div>
-        </div>
-        <div class="callout key">
-          <p class="c-label">Princípio</p>
-          <p>Com os três juntos, o cérebro não apenas <strong>pode</strong> mudar — ele <strong>vai</strong>. Já é princípio básico da neurociência.</p>
-        </div>
-
-        <h2>06 · Protocolos — os três canais que você controla</h2>
-        <p class="lead">Traduzindo a química em comportamento.</p>
-        <h3 class="k-alerta">Canal 1 · Alerta</h3>
-        <ul>
-          <li>Sono + cafeína para chegar alerta ao estudo.</li>
-          <li>Tenha <strong>2–3 razões</strong> (misture amor e medo) — o cérebro não distingue a origem da excitação.</li>
-        </ul>
-        <h3 class="k-foco">Canal 2 · Foco</h3>
-        <ul>
-          <li><strong>Foco mental segue foco visual:</strong> fixe uma pequena janela por 60–120 s.</li>
-          <li>Aprendizado auditivo? <strong>Feche os olhos</strong> — cria um cone de atenção.</li>
-          <li>Desconforto e agitação = provavelmente você está fazendo certo.</li>
-        </ul>
-        <h3 class="k-marca">Canal 3 · Duração</h3>
-        <ul>
-          <li>Blocos de ~90 min, com 5–10 min de aquecimento.</li>
-          <li>A atenção dispersa e você a <strong>re-ancora</strong> — esse retorno é o gatilho.</li>
-          <li>Não force foco o dia todo; poucas sessões intensas por dia.</li>
-        </ul>
-        <div class="stats">
-          <div class="stat focus"><div class="n">60–120<small> s</small></div><div class="l">de foco visual estreito destravam a atenção</div></div>
-          <div class="stat"><div class="n">~90<small> min</small></div><div class="l">duração de um bloco de estudo</div></div>
-        </div>
-
-        <h2>07 · A plasticidade acontece dormindo</h2>
-        <p class="lead">Você abre a janela acordado; a mudança se consolida no descanso.</p>
-        <p>O foco intenso só <strong>marca</strong> os circuitos. A reconfiguração real acontece no <strong>sono</strong> das noites seguintes.</p>
-        <div class="stats">
-          <div class="stat apply"><div class="n">+~50<small>%</small></div><div class="l">de plasticidade após ~20 min de NSDR pós-estudo</div></div>
-          <div class="stat"><div class="n">13<small> min/dia</small></div><div class="l">de NSDR já melhoraram atenção e memória (estudo com W. Suzuki)</div></div>
-        </div>
-        <div class="callout apply">
-          <p class="c-label">Receita de estudo</p>
-          <p>Bloco de <strong>~90 min</strong> com foco ancorado + <strong>NSDR de 20 min</strong> + <strong>sono protegido</strong> + <strong>revisão espaçada</strong> (1–7–15 dias). <span style="color:var(--muted)">O ~50% é síntese da fonte — orientação, não lei.</span></p>
-        </div>
-
-        <h2>08 · Resumo</h2>
-        <div class="takeaways">
-          <p class="tk-label">A espinha dorsal</p>
-          <ol>
-            <li>Plasticidade dura a vida toda, mas o adulto precisa de <strong>alerta + foco deliberados</strong>.</li>
-            <li><strong>Atenção seletiva</strong> — não a mera experiência — abre a janela.</li>
-            <li>Três ingredientes: <strong>epinefrina + acetilcolina (tronco) + acetilcolina (núcleo basal)</strong>.</li>
-            <li>Foco mental segue foco visual: estreite a janela por 60–120 s.</li>
-            <li>Trabalhe em blocos de ~90 min, re-ancorando a atenção.</li>
-            <li><strong>Sono e NSDR são obrigatórios</strong> — é aí que a mudança se consolida.</li>
-          </ol>
-        </div>
-
-        <div class="sources">
-          <h2>Referências</h2>
-          <ul>
-            <li><a href="https://pubmed.ncbi.nlm.nih.gov/1597696/" target="_blank" rel="noopener"><span class="s-t">Recanzone, Merzenich et al. (1992)</span></a> · reorganização da mão na área 3b · J Neurophysiol 67(5):1031–56 · PMID 1597696</li>
-            <li><a href="https://pubmed.ncbi.nlm.nih.gov/8423485/" target="_blank" rel="noopener"><span class="s-t">Recanzone, Schreiner &amp; Merzenich (1993)</span></a> · plasticidade no córtex auditivo · J Neurosci 13:87–103</li>
-          </ul>
-        </div>
-      </article>
-
-      <!-- ============================================================
-           CAPÍTULO 02 — Dopamina & Motivação
-           ============================================================ -->
-      <article class="chapter" id="cap-02"
-               data-num="02" data-title="Dopamina &amp; Motivação" data-tag="Busca &amp; impulso">
-        <p class="ch-kicker">Neurociência · Parte II</p>
-        <h1>Dopamina &amp; Motivação</h1>
-        <p class="ch-sub">Não é a química do prazer — é a química da <strong>procura</strong>. E funciona por uma dança entre pico e linha de base.</p>
-        <p class="ch-meta">8 seções · guia visual</p>
-
-        <div class="curve">
-          <svg viewBox="0 0 680 232" role="img" aria-label="Curva: um pico de dopamina seguido de queda abaixo da linha de base">
-            <path class="debt" d="M 360,128 C 372,158 384,172 396,184 C 424,206 458,198 506,180 C 566,158 616,148 664,142 L 664,128 Z"/>
-            <path class="base" d="M 16,128 L 664,128"/>
-            <path class="trace" d="M 16,126 L 92,123 C 148,120 196,120 232,100 C 262,82 286,48 314,48 C 342,48 356,150 396,184 C 424,206 458,198 506,180 C 566,158 616,148 664,142"/>
-            <circle cx="314" cy="48" r="5" fill="var(--f-warn)"/>
-            <circle cx="399" cy="187" r="5" fill="var(--f-warn)"/>
-            <text class="lbl" x="18" y="120">linha de base</text>
-            <text class="lbl hi" x="314" y="34" text-anchor="middle">PICO</text>
-            <text class="lbl lo" x="399" y="211" text-anchor="middle">queda abaixo da base</text>
-          </svg>
-          <p class="c-cap">todo pico é seguido de um vale que vai <strong>abaixo</strong> de onde você começou</p>
-        </div>
-
-        <h2>09 · O que a dopamina faz</h2>
-        <p class="lead">Molécula da busca — impulso, desejo, movimento e percepção do tempo.</p>
-        <div class="facts">
-          <div class="f-row"><div class="f-lab">Circuito · Movimento</div><div class="f-val">Substância negra → estriado dorsal. Falha no <strong>Parkinson</strong>: tremor e dificuldade de <strong>iniciar</strong> o movimento.</div></div>
-          <div class="f-row"><div class="f-lab">Circuito · Recompensa</div><div class="f-val">Via <strong>mesocorticolímbica</strong> — inclui o córtex pré-frontal, por onde a mente interfere na experiência.</div></div>
-        </div>
-        <div class="callout key">
-          <p class="c-label">Por que Parkinson abate o humor</p>
-          <p>A dopamina cai também na via da motivação — por isso vêm <strong>desânimo e depressão</strong>, não só sintomas motores.</p>
-        </div>
-
-        <h2>10 · A dança: base ↔ pico</h2>
-        <p class="lead">O que importa não é o número absoluto, e sim o <em>agora</em> comparado a minutos atrás.</p>
-        <p>Todo pico é seguido de uma queda que vai <strong>abaixo</strong> da base. Repetir picos grandes rebaixa a base até nada mais dar alegria — isso é <span class="k-dopa">vício</span>.</p>
-        <div class="callout key">
-          <p class="c-label">O reservatório</p>
-          <p>Só se libera a dopamina já embalada (<em>readily releasable pool</em>). Depois de um pico enorme, não sobra para a base — buscar a mesma fonte de novo <strong>afunda ainda mais</strong>.</p>
-        </div>
-        <div class="callout term">
-          <p class="c-label">Por que evoluímos assim</p>
-          <p>Dopamina é a moeda da procura. Se o pico não caísse abaixo da base, você nunca voltaria a caçar. A queda te <strong>recoloca em movimento</strong>.</p>
-        </div>
-
-        <h2>11 · O que eleva a dopamina — e quanto</h2>
-        <p class="lead">Aumento aproximado acima da base (e transitório).</p>
-        <div class="bars">
-          <div class="bar"><div class="b-lab">Chocolate</div><div class="b-track"><div class="b-fill" style="width:15%"></div></div><div class="b-val">1,5×</div></div>
-          <div class="bar"><div class="b-lab">Sexo<small>busca + ato</small></div><div class="b-track"><div class="b-fill" style="width:20%"></div></div><div class="b-val">2×</div></div>
-          <div class="bar"><div class="b-lab">Exercício<small>se você gosta</small></div><div class="b-track"><div class="b-fill" style="width:20%"></div></div><div class="b-val">~2×</div></div>
-          <div class="bar warn"><div class="b-lab">Nicotina<small>fumada</small></div><div class="b-track"><div class="b-fill" style="width:25%"></div></div><div class="b-val">2,5×</div></div>
-          <div class="bar warn"><div class="b-lab">Cocaína</div><div class="b-track"><div class="b-fill" style="width:25%"></div></div><div class="b-val">2,5×</div></div>
-          <div class="bar warn"><div class="b-lab">Anfetamina</div><div class="b-track"><div class="b-fill" style="width:100%"></div></div><div class="b-val">10×</div></div>
-        </div>
-        <div class="callout key">
-          <p class="c-label">Por que o exercício “depende”</p>
-          <p>Drogas elevam a dopamina em qualquer um. Já o exercício depende de você <strong>gostar</strong> — é o <span class="k-marca">pré-frontal</span> que atribui o significado.</p>
-        </div>
-
-        <h2>12 · Recompensa intermitente</h2>
-        <p class="lead">O que prende você em cassinos e apps é a recompensa que vem <em>às vezes</em>.</p>
-        <div class="callout apply">
-          <p class="c-label">Vire o jogo</p>
-          <p>Não persiga o pico máximo toda vez. Deixe a recompensa ser <strong>intermitente de propósito</strong>: às vezes celebre muito; às vezes, nada.</p>
-        </div>
-
-        <h2>13 · O custo oculto no aprendizado</h2>
-        <p class="lead">Onde a Parte II reencontra a Parte I.</p>
-        <div class="stats">
-          <div class="stat dopa"><div class="n">2003</div><div class="l">estudo: anfetamina e cocaína limitam a plasticidade estrutural posterior</div></div>
-        </div>
-        <div class="callout key">
-          <p class="c-label">Ligação com a Parte I</p>
-          <p>Rebaixar cronicamente a base de dopamina rema contra o conjunto <span class="k-alerta">alerta</span> + <span class="k-foco">foco</span> + <span class="k-marca">marcação</span>. Proteger a dopamina é <strong>proteger o aprender</strong>.</p>
-        </div>
-
-        <h2>14 · Protocolos: elevar a base com saúde</h2>
-        <p class="lead">Como buscar picos sem afundar a linha de base.</p>
-        <div class="steps">
-          <div class="step"><div class="st-n">1</div><div>
-            <h4 class="k-dopa">Frio</h4>
-            <p>Água fria <strong>sobe a própria base</strong> por horas. Num estudo, dopamina até ~2,5×, mantida.</p>
-          </div></div>
-          <div class="step"><div class="st-n">2</div><div>
-            <h4 class="k-dopa">Cafeína &amp; erva-mate</h4>
-            <p>Cafeína regula para cima os receptores D2/D3; a erva-mate é <strong>neuroprotetora</strong> para neurônios dopaminérgicos.</p>
-          </div></div>
-          <div class="step"><div class="st-n">3</div><div>
-            <h4 class="k-dopa">Conexão social</h4>
-            <p>Interações próximas estimulam as vias dopaminérgicas. Não é acessório — é parte do sistema.</p>
-          </div></div>
-        </div>
-        <div class="callout warn">
-          <p class="c-label">Segurança no frio</p>
-          <p>Água a ~0–5 °C pode causar <strong>choque térmico</strong>. Para a maioria, ~10–15 °C basta. Faça cedo no dia.</p>
-        </div>
-        <div class="callout warn">
-          <p class="c-label">Compostos — só com médico</p>
-          <p>Bupropiona é <strong>prescrição</strong>. L-tirosina e PEA + alfa-GPC têm efeito curto e contraindicações (psicose, bipolaridade, ansiedade). <span style="color:var(--muted)">Informação, não recomendação — nada substitui orientação médica.</span></p>
-        </div>
-
-        <h2>15 · O prazer no esforço</h2>
-        <p class="lead">O aspecto mais poderoso de toda a biologia da dopamina.</p>
-        <p>Crianças que <strong>já gostavam</strong> de desenhar passaram a ganhar estrelinhas; quando as estrelas pararam, desenhavam muito menos. A recompensa externa <strong>corroeu</strong> o prazer interno.</p>
-        <div class="callout apply">
-          <p class="c-label">A regra de ouro</p>
-          <p>Não “dope” <strong>antes</strong> nem <strong>depois</strong> do esforço. Aprenda a extrair o pico <strong>do esforço em si</strong> — “a parte difícil é a parte boa”.</p>
-        </div>
-
-        <h2>16 · Resumo</h2>
-        <div class="takeaways">
-          <p class="tk-label">Dopamina em 7 linhas</p>
-          <ol>
-            <li>Dopamina é <strong>busca</strong>, não prazer.</li>
-            <li>O que importa é o <strong>relativo</strong>: agora vs. minutos atrás.</li>
-            <li>Todo pico cobra um vale abaixo da base; picos grandes repetidos = <strong>vício</strong>.</li>
-            <li>Não persiga o pico máximo toda vez — recompensa <strong>intermitente</strong>.</li>
-            <li>Anfetamina e cocaína <strong>travam a plasticidade</strong>.</li>
-            <li>Frio, cafeína/erva-mate e conexão social <strong>sustentam a base</strong>.</li>
-            <li>O superpoder é o <strong>prazer no esforço</strong>.</li>
-          </ol>
-        </div>
-
-        <div class="sources">
-          <h2>Referências</h2>
-          <ul>
-            <li><a href="https://pubmed.ncbi.nlm.nih.gov/12939407/" target="_blank" rel="noopener"><span class="s-t">Kolb, Gorny, Li, Samaha &amp; Robinson (2003)</span></a> · anfetamina/cocaína limitam a plasticidade posterior · PNAS 100(18):10523–528 · PMID 12939407</li>
-            <li><a href="https://pubmed.ncbi.nlm.nih.gov/10751106/" target="_blank" rel="noopener"><span class="s-t">Šrámek et al. (2000)</span></a> · imersão em água fria; dopamina ≈2,5× a 14 °C · Eur J Appl Physiol 81(5):436–42 · PMID 10751106</li>
-          </ul>
-        </div>
-      </article>
-
-      <!-- ============================================================
-           ⬇️  NOVOS CAPÍTULOS ENTRAM AQUI
-           Copie um <article> acima, troque id/num/título/tag e o
-           conteúdo. O menu se atualiza sozinho.
-           ============================================================ -->
-
-    </div><!-- /reader -->
+    <div class="reader" id="reader"><!-- capítulos renderizados via JS --></div>
   </main>
 
 </div><!-- /shell -->
 
+<!-- ============================================================
+     EDITOR: criar / editar capítulo
+     ============================================================ -->
+<div class="editor-back" id="editorBack"></div>
+<div class="editor" id="editor" role="dialog" aria-modal="true" aria-labelledby="edMode">
+  <div class="ed-head">
+    <span class="ed-mode" id="edMode">Novo capítulo</span>
+    <button class="ed-x" id="edCancel" type="button">Fechar</button>
+  </div>
+  <div class="ed-fields">
+    <label>Kicker (linha acima do título)
+      <input id="edKicker" type="text" placeholder="Ex.: Neurociência · Parte I">
+    </label>
+    <div class="ed-row">
+      <label>Número
+        <input id="edNum" type="text" placeholder="01">
+      </label>
+      <label>Etiqueta
+        <input id="edTag" type="text" placeholder="Ex.: Foco &amp; atenção">
+      </label>
+    </div>
+    <label>Título
+      <input id="edTitle" type="text" placeholder="Título do capítulo">
+    </label>
+    <label>Subtítulo
+      <input id="edSub" type="text" placeholder="Uma frase curta de abertura">
+    </label>
+    <label>Conteúdo</label>
+    <div class="ed-toolbar">
+      <button type="button" data-cmd="formatBlock" data-val="h2" title="Título de seção">H2</button>
+      <button type="button" data-cmd="formatBlock" data-val="h3" title="Subtítulo">H3</button>
+      <button type="button" data-cmd="formatBlock" data-val="p" title="Parágrafo">¶</button>
+      <button type="button" data-cmd="bold" title="Negrito"><b>B</b></button>
+      <button type="button" data-cmd="italic" title="Itálico"><i>I</i></button>
+      <button type="button" data-cmd="insertUnorderedList" title="Lista">• Lista</button>
+      <button type="button" data-cmd="formatBlock" data-val="blockquote" title="Citação">❝ Citação</button>
+      <button type="button" data-cmd="callout" data-val="key" title="Bloco de nota">Nota</button>
+      <button type="button" data-cmd="callout" data-val="apply" title="Bloco de aplicar">Aplicar</button>
+      <button type="button" data-cmd="callout" data-val="warn" title="Bloco de cuidado">Cuidado</button>
+      <button type="button" data-cmd="hr" title="Linha divisória">Linha</button>
+      <button type="button" data-cmd="link" title="Inserir link">🔗 Link</button>
+    </div>
+    <div class="ed-body" id="edBody" contenteditable="true" data-ph="Escreva o conteúdo do capítulo aqui…"></div>
+  </div>
+  <div class="ed-foot">
+    <button class="ed-del" id="edDelete" type="button">Excluir</button>
+    <span class="spacer"></span>
+    <button class="ed-save" id="edSave" type="button">Salvar</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     SEMENTE: conteúdo inicial (lido 1x e movido para o localStorage).
+     A partir daí, tudo é editável pelo próprio usuário.
+     ============================================================ -->
+<template id="seed">
+
+  <article class="chapter" data-num="01" data-tag="Foco &amp; atenção">
+    <p class="ch-kicker">Neurociência · Parte I</p>
+    <h1>Neuroplasticidade</h1>
+    <p class="ch-sub">O cérebro adulto muda. Mas, depois dos ~25 anos, só sob um conjunto químico preciso.</p>
+
+    <div class="equation" aria-label="A fórmula química da plasticidade">
+      <div class="terms">
+        <div class="term"><span class="tt k-alerta">Alerta</span><span class="nm">Epinefrina</span><span class="sr">Locus coeruleus</span></div>
+        <div class="op">+</div>
+        <div class="term"><span class="tt k-foco">Foco</span><span class="nm">Acetilcolina</span><span class="sr">Tronco encefálico</span></div>
+        <div class="op">+</div>
+        <div class="term"><span class="tt k-marca">Marcação</span><span class="nm">Acetilcolina</span><span class="sr">Núcleo basal</span></div>
+      </div>
+      <p class="result">→ o cérebro adulto não só <em>pode</em> como <em>precisa</em> mudar</p>
+    </div>
+
+    <h2>01 · O que muda, e o que não</h2>
+    <p class="lead">Nem todo circuito é plástico. E isso é uma vantagem.</p>
+    <div class="duo">
+      <div class="d-card plastic">
+        <span class="d-badge">Plástico, muda</span>
+        <h4>Mapa do mundo</h4>
+        <p>Áreas visuais, auditivas e olfativas. A experiência remodela o mapa a vida toda.</p>
+      </div>
+      <div class="d-card fixed">
+        <span class="d-badge">Fixo, confiável</span>
+        <h4>Funções vitais</h4>
+        <p>Batimento, respiração, digestão. Projetados para não se alterar.</p>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat apply"><div class="n">~25<small> anos</small></div><div class="l">até aí a mudança é quase passiva; depois, exige foco deliberado</div></div>
+      <div class="stat key"><div class="n">0</div><div class="l">neurônios novos, na prática; a mudança fortalece ou poda conexões existentes</div></div>
+    </div>
+    <div class="callout key">
+      <p class="c-label">Nota</p>
+      <p>A neurogênese no hipocampo adulto ainda é <strong>debate ativo</strong> na literatura; trate o “zero” como aproximação prática.</p>
+    </div>
+
+    <h2>02 · O córtex é um mapa da experiência</h2>
+    <p class="lead">Quando um sentido falta, o território é reaproveitado.</p>
+    <div class="facts">
+      <div class="f-row"><div class="f-lab">Evidência</div><div class="f-val">Em pessoas cegas de nascença, o <span class="k-foco">córtex occipital</span> (“visual”) passa a processar <strong>audição e tato</strong>, como no Braille.</div></div>
+      <div class="f-row"><div class="f-lab">Efeito</div><div class="f-val">Acuidade auditiva e tátil muito superiores; incidência muito maior de <strong>ouvido absoluto</strong>.</div></div>
+      <div class="f-row"><div class="f-lab">Conclusão</div><div class="f-val">Não há “mapa padrão”. O córtex é um mapa <strong>personalizado</strong> do corpo e da vida de cada um.</div></div>
+    </div>
+
+    <h2>03 · Consciência é o passo zero</h2>
+    <p class="lead">Reconhecer que você quer mudar algo já inicia o processo.</p>
+    <p>Trazer algo para a consciência sinaliza ao <span class="k-marca">córtex pré-frontal</span> que aquilo merece atenção, e deixa de ser automático.</p>
+    <div class="callout warn">
+      <p class="c-label">Mito derrubado</p>
+      <p>“Toda experiência muda seu cérebro” é <strong>falso</strong> no adulto. Só muda aquilo a que você presta <strong>atenção seletiva</strong>, e só para aquela experiência.</p>
+    </div>
+
+    <h2>04 · A descoberta: atenção reconfigura o adulto</h2>
+    <p class="lead">Recanzone &amp; Merzenich (UCSF) provaram que o cérebro adulto é plástico.</p>
+    <div class="facts">
+      <div class="f-row"><div class="f-lab">Sujeitos</div><div class="f-val">Macacos-coruja <strong>adultos</strong>, fora do “período crítico” da infância.</div></div>
+      <div class="f-row"><div class="f-lab">Tarefa</div><div class="f-val">Detectar diferenças sutis numa <strong>vibração tátil</strong> num pontinho do dedo, exigia atenção.</div></div>
+      <div class="f-row"><div class="f-lab">Resultado</div><div class="f-val">O mapa cortical do dedo treinado (área <strong>3b</strong>) se expandiu junto com a melhora.</div></div>
+      <div class="f-row"><div class="f-lab">Controle</div><div class="f-val">Com o mesmo toque, mas atenção num <strong>som</strong>, a plasticidade ia para o córtex <strong>auditivo</strong>.</div></div>
+    </div>
+    <div class="callout term">
+      <p class="c-label">A lição</p>
+      <p>Não é a experiência que muda o cérebro; é a experiência <strong>à qual você presta atenção</strong>.</p>
+    </div>
+
+    <h2>05 · Os três ingredientes químicos</h2>
+    <p class="lead">A plasticidade depende de três neuromoduladores liberados juntos.</p>
+    <div class="steps">
+      <div class="step"><div class="st-n">1</div><div>
+        <h4 class="k-alerta">Epinefrina, alerta</h4>
+        <p>Do <strong>locus coeruleus</strong>. Sem alerta, nada acontece.</p>
+      </div></div>
+      <div class="step"><div class="st-n">2</div><div>
+        <h4 class="k-foco">Acetilcolina (tronco), holofote</h4>
+        <p>Age no <strong>tálamo</strong> e aumenta a relação sinal-ruído: destaca “um grito na multidão”.</p>
+      </div></div>
+      <div class="step"><div class="st-n">3</div><div>
+        <h4 class="k-marca">Acetilcolina (núcleo basal), marcação</h4>
+        <p>Do <strong>núcleo basal de Meynert</strong>. É o que faltava: consolida o que foi destacado.</p>
+      </div></div>
+    </div>
+    <div class="callout key">
+      <p class="c-label">Princípio</p>
+      <p>Com os três juntos, o cérebro não apenas <strong>pode</strong> mudar; ele <strong>vai</strong>. Já é princípio básico da neurociência.</p>
+    </div>
+
+    <h2>06 · Protocolos: os três canais que você controla</h2>
+    <p class="lead">Traduzindo a química em comportamento.</p>
+    <h3 class="k-alerta">Canal 1 · Alerta</h3>
+    <ul>
+      <li>Sono + cafeína para chegar alerta ao estudo.</li>
+      <li>Tenha <strong>2–3 razões</strong> (misture amor e medo), o cérebro não distingue a origem da excitação.</li>
+    </ul>
+    <h3 class="k-foco">Canal 2 · Foco</h3>
+    <ul>
+      <li><strong>Foco mental segue foco visual:</strong> fixe uma pequena janela por 60–120 s.</li>
+      <li>Aprendizado auditivo? <strong>Feche os olhos</strong>, cria um cone de atenção.</li>
+      <li>Desconforto e agitação = provavelmente você está fazendo certo.</li>
+    </ul>
+    <h3 class="k-marca">Canal 3 · Duração</h3>
+    <ul>
+      <li>Blocos de ~90 min, com 5–10 min de aquecimento.</li>
+      <li>A atenção dispersa e você a <strong>re-ancora</strong>, esse retorno é o gatilho.</li>
+      <li>Não force foco o dia todo; poucas sessões intensas por dia.</li>
+    </ul>
+    <div class="stats">
+      <div class="stat focus"><div class="n">60–120<small> s</small></div><div class="l">de foco visual estreito destravam a atenção</div></div>
+      <div class="stat"><div class="n">~90<small> min</small></div><div class="l">duração de um bloco de estudo</div></div>
+    </div>
+
+    <h2>07 · A plasticidade acontece dormindo</h2>
+    <p class="lead">Você abre a janela acordado; a mudança se consolida no descanso.</p>
+    <p>O foco intenso só <strong>marca</strong> os circuitos. A reconfiguração real acontece no <strong>sono</strong> das noites seguintes.</p>
+    <div class="stats">
+      <div class="stat apply"><div class="n">+~50<small>%</small></div><div class="l">de plasticidade após ~20 min de NSDR pós-estudo</div></div>
+      <div class="stat"><div class="n">13<small> min/dia</small></div><div class="l">de NSDR já melhoraram atenção e memória (estudo com W. Suzuki)</div></div>
+    </div>
+    <div class="callout apply">
+      <p class="c-label">Receita de estudo</p>
+      <p>Bloco de <strong>~90 min</strong> com foco ancorado + <strong>NSDR de 20 min</strong> + <strong>sono protegido</strong> + <strong>revisão espaçada</strong> (1–7–15 dias). <span style="color:var(--muted)">O ~50% é síntese da fonte, orientação, não lei.</span></p>
+    </div>
+
+    <h2>08 · Resumo</h2>
+    <div class="takeaways">
+      <p class="tk-label">A espinha dorsal</p>
+      <ol>
+        <li>Plasticidade dura a vida toda, mas o adulto precisa de <strong>alerta + foco deliberados</strong>.</li>
+        <li><strong>Atenção seletiva</strong>, não a mera experiência, abre a janela.</li>
+        <li>Três ingredientes: <strong>epinefrina + acetilcolina (tronco) + acetilcolina (núcleo basal)</strong>.</li>
+        <li>Foco mental segue foco visual: estreite a janela por 60–120 s.</li>
+        <li>Trabalhe em blocos de ~90 min, re-ancorando a atenção.</li>
+        <li><strong>Sono e NSDR são obrigatórios</strong>: é aí que a mudança se consolida.</li>
+      </ol>
+    </div>
+
+    <div class="sources">
+      <h2>Referências</h2>
+      <ul>
+        <li><a href="https://pubmed.ncbi.nlm.nih.gov/1597696/" target="_blank" rel="noopener"><span class="s-t">Recanzone, Merzenich et al. (1992)</span></a> · reorganização da mão na área 3b · J Neurophysiol 67(5):1031–56 · PMID 1597696</li>
+        <li><a href="https://pubmed.ncbi.nlm.nih.gov/8423485/" target="_blank" rel="noopener"><span class="s-t">Recanzone, Schreiner &amp; Merzenich (1993)</span></a> · plasticidade no córtex auditivo · J Neurosci 13:87–103</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="chapter" data-num="02" data-tag="Busca &amp; impulso">
+    <p class="ch-kicker">Neurociência · Parte II</p>
+    <h1>Dopamina &amp; Motivação</h1>
+    <p class="ch-sub">Não é a química do prazer, é a química da <strong>procura</strong>. E funciona por uma dança entre pico e linha de base.</p>
+
+    <div class="curve">
+      <svg viewBox="0 0 680 232" role="img" aria-label="Curva: um pico de dopamina seguido de queda abaixo da linha de base">
+        <path class="debt" d="M 360,128 C 372,158 384,172 396,184 C 424,206 458,198 506,180 C 566,158 616,148 664,142 L 664,128 Z"/>
+        <path class="base" d="M 16,128 L 664,128"/>
+        <path class="trace" d="M 16,126 L 92,123 C 148,120 196,120 232,100 C 262,82 286,48 314,48 C 342,48 356,150 396,184 C 424,206 458,198 506,180 C 566,158 616,148 664,142"/>
+        <circle cx="314" cy="48" r="5" fill="var(--f-warn)"/>
+        <circle cx="399" cy="187" r="5" fill="var(--f-warn)"/>
+        <text class="lbl" x="18" y="120">linha de base</text>
+        <text class="lbl hi" x="314" y="34" text-anchor="middle">PICO</text>
+        <text class="lbl lo" x="399" y="211" text-anchor="middle">queda abaixo da base</text>
+      </svg>
+      <p class="c-cap">todo pico é seguido de um vale que vai <strong>abaixo</strong> de onde você começou</p>
+    </div>
+
+    <h2>09 · O que a dopamina faz</h2>
+    <p class="lead">Molécula da busca: impulso, desejo, movimento e percepção do tempo.</p>
+    <div class="facts">
+      <div class="f-row"><div class="f-lab">Circuito · Movimento</div><div class="f-val">Substância negra → estriado dorsal. Falha no <strong>Parkinson</strong>: tremor e dificuldade de <strong>iniciar</strong> o movimento.</div></div>
+      <div class="f-row"><div class="f-lab">Circuito · Recompensa</div><div class="f-val">Via <strong>mesocorticolímbica</strong>, inclui o córtex pré-frontal, por onde a mente interfere na experiência.</div></div>
+    </div>
+    <div class="callout key">
+      <p class="c-label">Por que Parkinson abate o humor</p>
+      <p>A dopamina cai também na via da motivação, por isso vêm <strong>desânimo e depressão</strong>, não só sintomas motores.</p>
+    </div>
+
+    <h2>10 · A dança: base ↔ pico</h2>
+    <p class="lead">O que importa não é o número absoluto, e sim o <em>agora</em> comparado a minutos atrás.</p>
+    <p>Todo pico é seguido de uma queda que vai <strong>abaixo</strong> da base. Repetir picos grandes rebaixa a base até nada mais dar alegria: isso é <span class="k-dopa">vício</span>.</p>
+    <div class="callout key">
+      <p class="c-label">O reservatório</p>
+      <p>Só se libera a dopamina já embalada (<em>readily releasable pool</em>). Depois de um pico enorme, não sobra para a base, buscar a mesma fonte de novo <strong>afunda ainda mais</strong>.</p>
+    </div>
+    <div class="callout term">
+      <p class="c-label">Por que evoluímos assim</p>
+      <p>Dopamina é a moeda da procura. Se o pico não caísse abaixo da base, você nunca voltaria a caçar. A queda te <strong>recoloca em movimento</strong>.</p>
+    </div>
+
+    <h2>11 · O que eleva a dopamina, e quanto</h2>
+    <p class="lead">Aumento aproximado acima da base (e transitório).</p>
+    <div class="bars">
+      <div class="bar"><div class="b-lab">Chocolate</div><div class="b-track"><div class="b-fill" style="width:15%"></div></div><div class="b-val">1,5×</div></div>
+      <div class="bar"><div class="b-lab">Sexo<small>busca + ato</small></div><div class="b-track"><div class="b-fill" style="width:20%"></div></div><div class="b-val">2×</div></div>
+      <div class="bar"><div class="b-lab">Exercício<small>se você gosta</small></div><div class="b-track"><div class="b-fill" style="width:20%"></div></div><div class="b-val">~2×</div></div>
+      <div class="bar warn"><div class="b-lab">Nicotina<small>fumada</small></div><div class="b-track"><div class="b-fill" style="width:25%"></div></div><div class="b-val">2,5×</div></div>
+      <div class="bar warn"><div class="b-lab">Cocaína</div><div class="b-track"><div class="b-fill" style="width:25%"></div></div><div class="b-val">2,5×</div></div>
+      <div class="bar warn"><div class="b-lab">Anfetamina</div><div class="b-track"><div class="b-fill" style="width:100%"></div></div><div class="b-val">10×</div></div>
+    </div>
+    <div class="callout key">
+      <p class="c-label">Por que o exercício “depende”</p>
+      <p>Drogas elevam a dopamina em qualquer um. Já o exercício depende de você <strong>gostar</strong>; é o <span class="k-marca">pré-frontal</span> que atribui o significado.</p>
+    </div>
+
+    <h2>12 · Recompensa intermitente</h2>
+    <p class="lead">O que prende você em cassinos e apps é a recompensa que vem <em>às vezes</em>.</p>
+    <div class="callout apply">
+      <p class="c-label">Vire o jogo</p>
+      <p>Não persiga o pico máximo toda vez. Deixe a recompensa ser <strong>intermitente de propósito</strong>: às vezes celebre muito; às vezes, nada.</p>
+    </div>
+
+    <h2>13 · O custo oculto no aprendizado</h2>
+    <p class="lead">Onde a Parte II reencontra a Parte I.</p>
+    <div class="stats">
+      <div class="stat dopa"><div class="n">2003</div><div class="l">estudo: anfetamina e cocaína limitam a plasticidade estrutural posterior</div></div>
+    </div>
+    <div class="callout key">
+      <p class="c-label">Ligação com a Parte I</p>
+      <p>Rebaixar cronicamente a base de dopamina rema contra o conjunto <span class="k-alerta">alerta</span> + <span class="k-foco">foco</span> + <span class="k-marca">marcação</span>. Proteger a dopamina é <strong>proteger o aprender</strong>.</p>
+    </div>
+
+    <h2>14 · Protocolos: elevar a base com saúde</h2>
+    <p class="lead">Como buscar picos sem afundar a linha de base.</p>
+    <div class="steps">
+      <div class="step"><div class="st-n">1</div><div>
+        <h4 class="k-dopa">Frio</h4>
+        <p>Água fria <strong>sobe a própria base</strong> por horas. Num estudo, dopamina até ~2,5×, mantida.</p>
+      </div></div>
+      <div class="step"><div class="st-n">2</div><div>
+        <h4 class="k-dopa">Cafeína &amp; erva-mate</h4>
+        <p>Cafeína regula para cima os receptores D2/D3; a erva-mate é <strong>neuroprotetora</strong> para neurônios dopaminérgicos.</p>
+      </div></div>
+      <div class="step"><div class="st-n">3</div><div>
+        <h4 class="k-dopa">Conexão social</h4>
+        <p>Interações próximas estimulam as vias dopaminérgicas. Não é acessório; é parte do sistema.</p>
+      </div></div>
+    </div>
+    <div class="callout warn">
+      <p class="c-label">Segurança no frio</p>
+      <p>Água a ~0–5 °C pode causar <strong>choque térmico</strong>. Para a maioria, ~10–15 °C basta. Faça cedo no dia.</p>
+    </div>
+    <div class="callout warn">
+      <p class="c-label">Compostos, só com médico</p>
+      <p>Bupropiona é <strong>prescrição</strong>. L-tirosina e PEA + alfa-GPC têm efeito curto e contraindicações (psicose, bipolaridade, ansiedade). <span style="color:var(--muted)">Informação, não recomendação; nada substitui orientação médica.</span></p>
+    </div>
+
+    <h2>15 · O prazer no esforço</h2>
+    <p class="lead">O aspecto mais poderoso de toda a biologia da dopamina.</p>
+    <p>Crianças que <strong>já gostavam</strong> de desenhar passaram a ganhar estrelinhas; quando as estrelas pararam, desenhavam muito menos. A recompensa externa <strong>corroeu</strong> o prazer interno.</p>
+    <div class="callout apply">
+      <p class="c-label">A regra de ouro</p>
+      <p>Não “dope” <strong>antes</strong> nem <strong>depois</strong> do esforço. Aprenda a extrair o pico <strong>do esforço em si</strong>, “a parte difícil é a parte boa”.</p>
+    </div>
+
+    <h2>16 · Resumo</h2>
+    <div class="takeaways">
+      <p class="tk-label">Dopamina em 7 linhas</p>
+      <ol>
+        <li>Dopamina é <strong>busca</strong>, não prazer.</li>
+        <li>O que importa é o <strong>relativo</strong>: agora vs. minutos atrás.</li>
+        <li>Todo pico cobra um vale abaixo da base; picos grandes repetidos = <strong>vício</strong>.</li>
+        <li>Não persiga o pico máximo toda vez: recompensa <strong>intermitente</strong>.</li>
+        <li>Anfetamina e cocaína <strong>travam a plasticidade</strong>.</li>
+        <li>Frio, cafeína/erva-mate e conexão social <strong>sustentam a base</strong>.</li>
+        <li>O superpoder é o <strong>prazer no esforço</strong>.</li>
+      </ol>
+    </div>
+
+    <div class="sources">
+      <h2>Referências</h2>
+      <ul>
+        <li><a href="https://pubmed.ncbi.nlm.nih.gov/12939407/" target="_blank" rel="noopener"><span class="s-t">Kolb, Gorny, Li, Samaha &amp; Robinson (2003)</span></a> · anfetamina/cocaína limitam a plasticidade posterior · PNAS 100(18):10523–528 · PMID 12939407</li>
+        <li><a href="https://pubmed.ncbi.nlm.nih.gov/10751106/" target="_blank" rel="noopener"><span class="s-t">Šrámek et al. (2000)</span></a> · imersão em água fria; dopamina ≈2,5× a 14 °C · Eur J Appl Physiol 81(5):436–42 · PMID 10751106</li>
+      </ul>
+    </div>
+  </article>
+
+</template>
+
 <script>
 (function(){
   'use strict';
-  var reader=document.getElementById('reader'), toc=document.getElementById('toc'),
-      search=document.getElementById('search'), progress=document.getElementById('progress'),
-      side=document.getElementById('side'), overlay=document.getElementById('overlay'),
-      menuBtn=document.getElementById('menuBtn');
-  var chapters=Array.prototype.slice.call(reader.querySelectorAll('.chapter'));
-  var LS_LAST='biblioteca:last', LS_READ='biblioteca:read';
 
-  function getRead(){ try{return JSON.parse(localStorage.getItem(LS_READ)||'[]');}catch(e){return [];} }
-  function markRead(id){ var r=getRead(); if(r.indexOf(id)===-1){r.push(id); localStorage.setItem(LS_READ,JSON.stringify(r));} }
+  var LS_CH='biblioteca:chapters', LS_LAST='biblioteca:last', LS_READ='biblioteca:read';
+
+  var reader=document.getElementById('reader'),
+      toc=document.getElementById('toc'),
+      search=document.getElementById('search'),
+      progress=document.getElementById('progress'),
+      side=document.getElementById('side'),
+      overlay=document.getElementById('overlay'),
+      menuBtn=document.getElementById('menuBtn'),
+      newBtn=document.getElementById('newBtn'),
+      brand=document.getElementById('brand');
+
+  var editor=document.getElementById('editor'),
+      editorBack=document.getElementById('editorBack'),
+      edMode=document.getElementById('edMode'),
+      edKicker=document.getElementById('edKicker'),
+      edNum=document.getElementById('edNum'),
+      edTag=document.getElementById('edTag'),
+      edTitle=document.getElementById('edTitle'),
+      edSub=document.getElementById('edSub'),
+      edBody=document.getElementById('edBody'),
+      edSave=document.getElementById('edSave'),
+      edDelete=document.getElementById('edDelete'),
+      edCancel=document.getElementById('edCancel');
+
+  var chapters=[];      // modelo de dados
+  var currentId=null;   // capítulo em exibição
+  var editingId=null;   // capítulo em edição (null = novo)
+
+  /* ---------- persistência ---------- */
+  function loadCh(){ try{ return JSON.parse(localStorage.getItem(LS_CH)||'null'); }catch(e){ return null; } }
+  function saveCh(){ localStorage.setItem(LS_CH, JSON.stringify(chapters)); }
+  function getRead(){ try{ return JSON.parse(localStorage.getItem(LS_READ)||'[]'); }catch(e){ return []; } }
+  function markRead(id){ var r=getRead(); if(r.indexOf(id)===-1){ r.push(id); localStorage.setItem(LS_READ,JSON.stringify(r)); } }
+
+  /* ---------- utilidades ---------- */
+  function uid(){ return 'cap-'+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36); }
+  function byId(id){ for(var i=0;i<chapters.length;i++){ if(chapters[i].id===id) return chapters[i]; } return null; }
+  function indexOf(id){ for(var i=0;i<chapters.length;i++){ if(chapters[i].id===id) return i; } return -1; }
+  function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function nextNum(){
+    var mx=0; chapters.forEach(function(c){ var n=parseInt(c.num,10); if(!isNaN(n)&&n>mx) mx=n; });
+    var s=String(mx+1); return s.length<2 ? '0'+s : s;
+  }
+
+  /* ---------- semente inicial ---------- */
+  function seed(){
+    var tpl=document.getElementById('seed');
+    var arts=tpl.content.querySelectorAll('article');
+    var list=[];
+    Array.prototype.forEach.call(arts,function(a){
+      var clone=a.cloneNode(true);
+      var txt=function(sel){ var el=clone.querySelector(sel); return el?el.textContent.trim():''; };
+      var kicker=txt('.ch-kicker'), title=txt('h1'), sub=txt('.ch-sub');
+      ['.ch-kicker','h1','.ch-sub','.ch-meta'].forEach(function(sel){ var el=clone.querySelector(sel); if(el) el.parentNode.removeChild(el); });
+      // decodifica entidades da etiqueta (ex.: &amp; -> &)
+      var dec=document.createElement('textarea'); dec.innerHTML=a.getAttribute('data-tag')||'';
+      list.push({
+        id:uid(),
+        kicker:kicker,
+        num:a.getAttribute('data-num')||'',
+        tag:dec.value,
+        title:title,
+        sub:sub,
+        body:clone.innerHTML.trim()
+      });
+    });
+    return list;
+  }
+
+  /* ---------- render ---------- */
+  function chapterEl(ch){
+    var art=document.createElement('article');
+    art.className='chapter'; art.id=ch.id;
+
+    var actions=document.createElement('div'); actions.className='ch-actions';
+    actions.innerHTML=
+      '<button type="button" data-act="edit">Editar</button>'+
+      '<button type="button" data-act="up" title="Mover para cima">↑</button>'+
+      '<button type="button" data-act="down" title="Mover para baixo">↓</button>'+
+      '<button type="button" data-act="del" class="danger">Excluir</button>';
+    Array.prototype.forEach.call(actions.querySelectorAll('button'),function(b){ b.setAttribute('data-id',ch.id); });
+    art.appendChild(actions);
+
+    if(ch.kicker){ var k=document.createElement('p'); k.className='ch-kicker'; k.textContent=ch.kicker; art.appendChild(k); }
+    var h=document.createElement('h1'); h.textContent=ch.title||'Sem título'; art.appendChild(h);
+    if(ch.sub){ var s=document.createElement('p'); s.className='ch-sub'; s.textContent=ch.sub; art.appendChild(s); }
+    var body=document.createElement('div'); body.className='ch-body'; body.innerHTML=ch.body||''; art.appendChild(body);
+    return art;
+  }
+
+  function renderReader(){
+    reader.innerHTML='';
+    if(!chapters.length){
+      reader.innerHTML='<div class="empty-state"><h2>Sua biblioteca está vazia</h2>'+
+        '<p>Crie o primeiro capítulo para começar a escrever.</p>'+
+        '<button class="new-btn" id="emptyNew" style="max-width:240px;margin:20px auto 0">+ Novo capítulo</button></div>';
+      var en=document.getElementById('emptyNew'); if(en) en.addEventListener('click',openNew);
+      return;
+    }
+    chapters.forEach(function(ch){ reader.appendChild(chapterEl(ch)); });
+  }
 
   function buildTOC(){
     toc.innerHTML='';
     if(!chapters.length){ toc.innerHTML='<li class="empty">Nenhum capítulo ainda.</li>'; return; }
     var read=getRead();
     chapters.forEach(function(ch){
-      var id=ch.id, num=ch.getAttribute('data-num')||'', ttl=ch.getAttribute('data-title')||id, tag=ch.getAttribute('data-tag')||'';
       var li=document.createElement('li'), a=document.createElement('a');
-      a.href='#'+id; a.dataset.id=id;
-      if(read.indexOf(id)!==-1) a.classList.add('read');
-      a.innerHTML='<span class="t-read" aria-hidden="true"></span><span class="t-num">'+num+'</span><span class="t-title">'+ttl+'</span>'+(tag?'<span class="t-tag">'+tag+'</span>':'');
+      a.href='#'+ch.id; a.dataset.id=ch.id;
+      if(read.indexOf(ch.id)!==-1) a.classList.add('read');
+      a.innerHTML='<span class="t-read" aria-hidden="true"></span>'+
+        '<span class="t-num">'+esc(ch.num)+'</span>'+
+        '<span class="t-title">'+esc(ch.title||'Sem título')+'</span>'+
+        (ch.tag?'<span class="t-tag">'+esc(ch.tag)+'</span>':'');
       li.appendChild(a); toc.appendChild(li);
     });
   }
 
   function show(id){
-    var target=document.getElementById(id);
-    if(!target||!target.classList.contains('chapter')){ target=chapters[0]; if(!target) return; id=target.id; }
-    chapters.forEach(function(ch){ ch.classList.toggle('active',ch===target); });
+    var target=byId(id) || chapters[0];
+    if(!target){ currentId=null; return; }
+    id=target.id; currentId=id;
+    Array.prototype.forEach.call(reader.querySelectorAll('.chapter'),function(a){ a.classList.toggle('active',a.id===id); });
     Array.prototype.forEach.call(toc.querySelectorAll('a'),function(a){ a.classList.toggle('active',a.dataset.id===id); });
     markRead(id);
     var link=toc.querySelector('a[data-id="'+id+'"]'); if(link) link.classList.add('read');
@@ -604,19 +792,128 @@ hr{border:none; border-top:1px solid var(--rule); margin:2.4em 0}
     window.scrollTo(0,0); updateProgress(); closeSide();
   }
 
+  function refresh(keepId){
+    renderReader(); buildTOC();
+    var want=keepId || currentId;
+    show(byId(want)?want:(chapters[0]&&chapters[0].id));
+  }
+
+  /* ---------- CRUD ---------- */
+  function openEditor(){ editorBack.classList.add('show'); editor.classList.add('show'); }
+  function closeEditor(){ editorBack.classList.remove('show'); editor.classList.remove('show'); editingId=null; }
+
+  function openNew(){
+    editingId=null;
+    edMode.textContent='Novo capítulo';
+    edKicker.value=''; edNum.value=nextNum(); edTag.value='';
+    edTitle.value=''; edSub.value=''; edBody.innerHTML='';
+    edDelete.style.display='none';
+    closeSide(); openEditor(); edTitle.focus();
+  }
+
+  function openEdit(id){
+    var ch=byId(id); if(!ch) return;
+    editingId=id;
+    edMode.textContent='Editar capítulo';
+    edKicker.value=ch.kicker||''; edNum.value=ch.num||''; edTag.value=ch.tag||'';
+    edTitle.value=ch.title||''; edSub.value=ch.sub||''; edBody.innerHTML=ch.body||'';
+    edDelete.style.display='';
+    openEditor(); edTitle.focus();
+  }
+
+  function saveEditor(){
+    var data={
+      kicker:edKicker.value.trim(),
+      num:edNum.value.trim(),
+      tag:edTag.value.trim(),
+      title:edTitle.value.trim()||'Sem título',
+      sub:edSub.value.trim(),
+      body:edBody.innerHTML.trim()
+    };
+    var id;
+    if(editingId){
+      var ch=byId(editingId);
+      for(var k in data){ if(data.hasOwnProperty(k)) ch[k]=data[k]; }
+      id=editingId;
+    } else {
+      id=uid(); data.id=id; chapters.push(data);
+    }
+    saveCh(); closeEditor(); refresh(id);
+  }
+
+  function deleteChapter(id){
+    if(!window.confirm('Excluir este capítulo? Isso não pode ser desfeito.')) return;
+    chapters=chapters.filter(function(c){ return c.id!==id; });
+    saveCh();
+    if(editingId===id) closeEditor();
+    if(currentId===id) currentId=null;
+    refresh();
+  }
+
+  function moveChapter(id,dir){
+    var i=indexOf(id); if(i<0) return;
+    var j=i+dir; if(j<0||j>=chapters.length) return;
+    var tmp=chapters[i]; chapters[i]=chapters[j]; chapters[j]=tmp;
+    saveCh(); refresh(id);
+  }
+
+  /* ---------- barra de ferramentas do editor ---------- */
+  function runCmd(cmd,val){
+    edBody.focus();
+    if(cmd==='formatBlock'){ document.execCommand('formatBlock', false, val); }
+    else if(cmd==='callout'){
+      var labels={key:'Nota', apply:'Aplicar', warn:'Cuidado', term:'Termo'};
+      document.execCommand('insertHTML', false,
+        '<div class="callout '+val+'"><p class="c-label">'+(labels[val]||'Nota')+'</p><p>Escreva aqui…</p></div><p><br></p>');
+    }
+    else if(cmd==='hr'){ document.execCommand('insertHTML', false, '<hr><p><br></p>'); }
+    else if(cmd==='link'){ var u=window.prompt('URL do link:'); if(u) document.execCommand('createLink', false, u); }
+    else { document.execCommand(cmd, false, val||null); }
+  }
+
+  /* ---------- barra de progresso / busca / menu ---------- */
   function updateProgress(){ var h=document.documentElement, max=h.scrollHeight-h.clientHeight; progress.style.width=(max>0?(h.scrollTop/max)*100:0)+'%'; }
   function filterTOC(){ var q=search.value.trim().toLowerCase(); Array.prototype.forEach.call(toc.querySelectorAll('a'),function(a){ a.parentNode.style.display=(!q||a.textContent.toLowerCase().indexOf(q)!==-1)?'':'none'; }); }
   function openSide(){ side.classList.add('open'); overlay.classList.add('show'); }
   function closeSide(){ side.classList.remove('open'); overlay.classList.remove('show'); }
 
-  window.addEventListener('hashchange',function(){ var id=location.hash.replace('#',''); if(id) show(id); });
+  /* ---------- eventos ---------- */
+  reader.addEventListener('click',function(e){
+    var btn=e.target.closest ? e.target.closest('.ch-actions button') : null;
+    if(!btn) return;
+    var id=btn.getAttribute('data-id'), act=btn.getAttribute('data-act');
+    if(act==='edit') openEdit(id);
+    else if(act==='del') deleteChapter(id);
+    else if(act==='up') moveChapter(id,-1);
+    else if(act==='down') moveChapter(id,1);
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll('.ed-toolbar button'),function(b){
+    b.addEventListener('mousedown',function(e){ e.preventDefault(); }); // preserva a seleção do texto
+    b.addEventListener('click',function(){ runCmd(b.getAttribute('data-cmd'), b.getAttribute('data-val')); });
+  });
+
+  newBtn.addEventListener('click',openNew);
+  edSave.addEventListener('click',saveEditor);
+  edCancel.addEventListener('click',closeEditor);
+  edDelete.addEventListener('click',function(){ if(editingId) deleteChapter(editingId); });
+  editorBack.addEventListener('click',closeEditor);
+  brand.addEventListener('click',function(e){ e.preventDefault(); if(chapters[0]) show(chapters[0].id); });
+
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape' && editor.classList.contains('show')) closeEditor(); });
+  window.addEventListener('hashchange',function(){ var id=location.hash.replace('#',''); if(id&&byId(id)) show(id); });
   window.addEventListener('scroll',updateProgress,{passive:true});
   search.addEventListener('input',filterTOC);
   menuBtn.addEventListener('click',openSide);
   overlay.addEventListener('click',closeSide);
 
-  buildTOC();
-  var start=location.hash.replace('#','')||localStorage.getItem(LS_LAST)||(chapters[0]&&chapters[0].id);
+  /* ---------- init ---------- */
+  chapters=loadCh();
+  if(!chapters || !chapters.length){ chapters=seed(); saveCh(); }
+  renderReader(); buildTOC();
+  var start=location.hash.replace('#','');
+  if(!byId(start)) start=localStorage.getItem(LS_LAST);
+  if(!byId(start)) start=chapters[0] && chapters[0].id;
   if(start) show(start);
 })();
 </script>

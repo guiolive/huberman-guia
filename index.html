@@ -131,6 +131,14 @@ body{
 .toc a.read .t-read{opacity:1}
 .toc .empty{color:var(--muted); font-style:italic; padding:10px 14px; font-size:.9rem}
 
+/* rodapé do menu — link para a versão neon */
+.side-foot{margin-top:22px; padding-top:16px; border-top:1px solid var(--rule)}
+.side-foot a{
+  display:inline-block; font-family:var(--sans); font-size:.78rem;
+  color:var(--muted); text-decoration:none;
+}
+.side-foot a:hover{color:var(--title); text-decoration:underline}
+
 /* ---- área de leitura (deslocada à direita da sidebar fixa) ---- */
 .main{margin-left:var(--side); min-width:0; padding:0 40px}
 .reader{max-width:var(--col); margin:0 auto; padding:64px 0 120px}
@@ -388,6 +396,9 @@ hr{border:none; border-top:1px solid var(--rule); margin:2.4em 0}
     <input class="search" id="search" type="search" placeholder="Buscar capítulo…" aria-label="Buscar capítulo">
     <p class="side-label">Capítulos</p>
     <ul class="toc" id="toc"></ul>
+    <div class="side-foot">
+      <a href="guia-neon.html">↗ Versão neon (guia original)</a>
+    </div>
   </aside>
 
   <!-- ===================== LEITURA ===================== -->

@@ -378,7 +378,7 @@ hr{border:none; border-top:1px solid var(--rule); margin:2.4em 0}
      ============================================================ -->
 <template id="seed">
 
-  <article class="chapter" data-num="01" data-tag="Foco &amp; atenção">
+  <article class="chapter" data-key="neuroplasticidade" data-num="01" data-tag="Foco &amp; atenção">
     <p class="ch-kicker">Neurociência · Parte I</p>
     <h1>Neuroplasticidade</h1>
     <p class="ch-sub">O cérebro adulto muda. Mas, depois dos ~25 anos, só sob um conjunto químico preciso.</p>
@@ -525,7 +525,7 @@ hr{border:none; border-top:1px solid var(--rule); margin:2.4em 0}
     </div>
   </article>
 
-  <article class="chapter" data-num="02" data-tag="Busca &amp; impulso">
+  <article class="chapter" data-key="dopamina" data-num="02" data-tag="Busca &amp; impulso">
     <p class="ch-kicker">Neurociência · Parte II</p>
     <h1>Dopamina &amp; Motivação</h1>
     <p class="ch-sub">Não é a química do prazer, é a química da <strong>procura</strong>. E funciona por uma dança entre pico e linha de base.</p>
@@ -655,7 +655,7 @@ hr{border:none; border-top:1px solid var(--rule); margin:2.4em 0}
     </div>
   </article>
 
-  <article class="chapter" data-num="03" data-tag="Prática &amp; memória">
+  <article class="chapter" data-key="aprendizado" data-num="03" data-tag="Prática &amp; memória">
     <p class="ch-kicker">Neurociência · Aprendizado</p>
     <h1>Como o cérebro aprende</h1>
     <p class="ch-sub">Terry Sejnowski: um <strong>único algoritmo</strong> move toda a motivação, e é a <strong>prática</strong> — não a teoria — que grava.</p>
@@ -806,6 +806,9 @@ hr{border:none; border-top:1px solid var(--rule); margin:2.4em 0}
   'use strict';
 
   var LS_CH='biblioteca:chapters', LS_LAST='biblioteca:last', LS_READ='biblioteca:read';
+  /* chaves dos capítulos-semente já importados — permite publicar capítulos
+     novos sem apagar as edições locais nem ressuscitar os que foram excluídos */
+  var LS_SEEN='biblioteca:seedkeys';
 
   var reader=document.getElementById('reader'),
       toc=document.getElementById('toc'),
@@ -837,6 +840,8 @@ hr{border:none; border-top:1px solid var(--rule); margin:2.4em 0}
   /* ---------- persistência ---------- */
   function loadCh(){ try{ return JSON.parse(localStorage.getItem(LS_CH)||'null'); }catch(e){ return null; } }
   function saveCh(){ localStorage.setItem(LS_CH, JSON.stringify(chapters)); }
+  function loadSeen(){ try{ return JSON.parse(localStorage.getItem(LS_SEEN)||'null'); }catch(e){ return null; } }
+  function saveSeen(k){ localStorage.setItem(LS_SEEN, JSON.stringify(k)); }
   function getRead(){ try{ return JSON.parse(localStorage.getItem(LS_READ)||'[]'); }catch(e){ return []; } }
   function markRead(id){ var r=getRead(); if(r.indexOf(id)===-1){ r.push(id); localStorage.setItem(LS_READ,JSON.stringify(r)); } }
 
@@ -864,6 +869,7 @@ hr{border:none; border-top:1px solid var(--rule); margin:2.4em 0}
       var dec=document.createElement('textarea'); dec.innerHTML=a.getAttribute('data-tag')||'';
       list.push({
         id:uid(),
+        key:a.getAttribute('data-key')||'',
         kicker:kicker,
         num:a.getAttribute('data-num')||'',
         tag:dec.value,
@@ -1053,7 +1059,31 @@ hr{border:none; border-top:1px solid var(--rule); margin:2.4em 0}
 
   /* ---------- init ---------- */
   chapters=loadCh();
-  if(!chapters || !chapters.length){ chapters=seed(); saveCh(); }
+  var seedList=seed();
+
+  if(!chapters || !chapters.length){
+    /* 1ª visita: importa a semente inteira */
+    chapters=seedList;
+    saveSeen(seedList.map(function(s){ return s.key; }).filter(Boolean));
+    saveCh();
+  }else{
+    /* já existe lista salva: mescla só os capítulos-semente inéditos */
+    var seen=loadSeen();
+    if(seen===null){
+      /* migração (quem salvou antes das chaves existirem): considera importado
+         todo capítulo-semente cujo título já está na lista salva */
+      seen=seedList.filter(function(s){
+        return chapters.some(function(c){ return c.title===s.title; });
+      }).map(function(s){ return s.key; });
+    }
+    var novos=0;
+    seedList.forEach(function(s){
+      if(s.key && seen.indexOf(s.key)===-1){ chapters.push(s); seen.push(s.key); novos++; }
+    });
+    saveSeen(seen);
+    if(novos) saveCh();
+  }
+
   renderReader(); buildTOC();
   var start=location.hash.replace('#','');
   if(!byId(start)) start=localStorage.getItem(LS_LAST);

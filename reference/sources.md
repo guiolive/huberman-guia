@@ -3,8 +3,11 @@
 Os números e afirmações do guia vêm destes materiais. Já estão embutidos em `index.html`.
 
 ## Episódios-base (Huberman Lab)
-- **Parte I — Neuroplasticidade:** Huberman Lab Essentials, "How to Focus to Change Your Brain"
-  https://www.hubermanlab.com/episode/essentials-how-to-focus-to-change-your-brain
+- **Parte I / Cap. 01 — Neuroplasticidade:** Huberman Lab, "How to Focus to Change Your Brain"
+  (episódio ORIGINAL completo, base do aprofundamento — ~1h29)
+  https://www.hubermanlab.com/episode/how-to-focus-to-change-your-brain
+  Essentials (versão curta): https://www.hubermanlab.com/episode/essentials-how-to-focus-to-change-your-brain
+  Transcrição salva em `reference/transcripts/01-neuroplasticidade.md`
 - **Parte II — Dopamina:** Huberman Lab Essentials,
   "Controlling Your Dopamine for Motivation, Focus & Satisfaction"
   https://www.hubermanlab.com/episode/essentials-controlling-your-dopamine-for-motivation-focus-satisfaction

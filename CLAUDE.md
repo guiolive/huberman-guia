@@ -1,71 +1,94 @@
-# Guia de Estudo — Neuroplasticidade & Dopamina (Huberman Lab)
+# Biblioteca de guias de estudo (Huberman Lab)
 
 ## O que é este projeto
-Uma página HTML única, em **pt-BR**, que sintetiza dois episódios do *Huberman Lab Essentials*
-num guia de estudo bonito e navegável:
-- **Parte I — Neuroplasticidade** (seções 01–08)
-- **Parte II — Dopamina & Motivação** (seções 09–16)
+Uma **biblioteca editável** de guias visuais de estudo, em **pt-BR**, baseada em episódios do
+*Huberman Lab*. Cada guia é um **capítulo** longo, em prosa editorial, que o próprio usuário pode
+criar, editar, reordenar e excluir direto no navegador.
 
 Tudo vive num só arquivo: **`index.html`** (HTML + CSS + JS inline, sem build, sem dependências
-além de Google Fonts). Abrir no navegador já funciona.
+além de Google Fonts). Abrir no navegador já funciona. `.nojekyll` na raiz → serve como site
+estático (ex.: GitHub Pages).
 
 ## Estado atual
-- `index.html` está **completo e funcional**: hero, 16 seções, flashcards interativos (18 cartões),
-  barra de progresso, nav sticky com scroll-spy, e fontes verificadas.
-- Visual atual = **tema escuro "neon"**: fundo quase preto com gradientes, e um sistema de
-  **cor = função** (ver abaixo).
+- `index.html` está **completo e funcional** (~1300 linhas). Não é mais o guia single-page antigo:
+  virou uma **Biblioteca** com sidebar de capítulos, busca, scroll-spy, barra de progresso,
+  marcador de "lido" e um **editor WYSIWYG** por capítulo.
+- Visual = **tema editorial estilo Medium** (creme + serifa preta). O reskin do Medium **já foi
+  feito** — não é mais uma tarefa pendente. Ver `reference/medium-theme.md` para o brief original.
+- O tema neon antigo **foi removido** do projeto (só sobra menção histórica no git).
 
-## Sistema de design atual (o que NÃO pode se perder no significado)
-As cores codificam conteúdo — não são decoração:
-| Cor | Var CSS | Significado |
-|-----|---------|-------------|
-| Laranja | `--alerta` `#FFB454` | Epinefrina / alerta (locus coeruleus) |
-| Turquesa | `--foco` `#3FD8C8` | Acetilcolina / foco (tronco encefálico) |
-| Roxo | `--marca` `#A98BFF` | Acetilcolina / marcação (núcleo basal) + córtex pré-frontal |
-| Rosa | `--dopa` `#FF5C8A` | Dopamina (toda a Parte II) |
+## Arquitetura (como funciona por dentro)
+- **Semente → localStorage.** O conteúdo inicial fica num `<template id="seed">` no HTML. Na
+  primeira carga ele é lido uma vez e movido para o `localStorage`; a partir daí **a fonte da
+  verdade é o `localStorage`**, não o HTML. Editar o `<template>` só afeta quem ainda não tem
+  dados salvos (ou capítulos-semente novos, via merge por chave — ver abaixo).
+- **Chaves do `localStorage`:**
+  | Chave | Conteúdo |
+  |-------|----------|
+  | `biblioteca:chapters` | array de capítulos (o modelo de dados) |
+  | `biblioteca:seedkeys` | `data-key`s de semente já importados — permite publicar capítulos novos sem apagar edições nem ressuscitar excluídos |
+  | `biblioteca:last` | último capítulo aberto |
+  | `biblioteca:read` | ids marcados como lidos (pontinho verde na TOC) |
+- **Modelo de um capítulo:** `{ id, key, kicker, num, tag, title, html }` (o corpo é HTML rico).
+- **CRUD:** editor com toolbar (`data-cmd` → `runCmd`): H2/H3/¶, negrito, itálico, lista, citação,
+  callouts (Nota/Aplicar/Cuidado), linha divisória, link. Botões por capítulo: Editar, ↑/↓
+  (reordenar), Excluir. `+ Novo capítulo` na sidebar.
+- **Navegação:** sidebar sticky com scroll-spy, busca que filtra a TOC, barra de progresso no topo,
+  drawer no mobile (`.topbar` + overlay), `#hash` por capítulo, `Esc` fecha o editor.
 
-Elementos-assinatura: a **"equação química"** no hero da Parte I e a **curva pico↔linha-de-base**
-(SVG) na abertura da Parte II. Ambos codificam a ideia central de cada parte.
+## Capítulos-semente atuais
+| Nº | `data-key` | Título | Base |
+|----|-----------|--------|------|
+| 01 | `neuroplasticidade` | Neuroplasticidade | Huberman (foco & atenção) |
+| 02 | `dopamina` | Dopamina & Motivação | Huberman (busca & impulso) |
+| 03 | `aprendizado` | Como o cérebro aprende | Sejnowski (prática & memória) |
+| 04 | `autocontrole` | Autocontrole & motivação | Fujita (autocontrole & metas) |
 
-Classes úteis já existentes: `.callout` (+ `.note` roxo, `.apply` laranja), `.exp` (bloco de
-experimento), `.steps/.step`, `.card` (`.plastic`/`.fixed`), `.bars/.bar` (`.warn`), `.take`
-(resumo numerado), `.fc` (flashcards), `.src` (fontes). Seções da Parte II têm a classe `.dopa`,
-que reaplica o rosa a numeração/callouts/listas.
+## Sistema de design (o que NÃO pode se perder no significado)
+Tema **creme + serifa preta**, seguindo a **rota 1** do brief do Medium: corpo preto-sobre-creme,
+com as 4 cores funcionais traduzidas para **acentos terrosos/dessaturados**, usados só em detalhes
+pequenos (filete de callout, número de seção, traço de SVG, termos marcados). A cor ainda codifica
+função — não é decoração:
 
----
+| Papel | Var CSS | Cor |
+|-------|---------|-----|
+| Ideia-chave / marcação (roxo) | `--f-key` | `#6E5A8F` |
+| Aplicar / alerta (ocre) | `--f-apply` | `#A8632E` |
+| Foco / termo (verde-azulado) | `--f-focus` | `#3E7D74` |
+| Cuidado / dopamina (argila-rosa) | `--f-warn` | `#A85570` |
 
-## TAREFA ATUAL: reskin para o tema do **Medium**
-O usuário quer trocar a pele visual para o estilo da home do Medium (medium.com).
-Ver `reference/medium-theme.md` para a especificação exata (cores, fontes, botões).
+Tokens base: `--bg #F7F4EC`, `--surface #FFF`, `--ink #242424`, `--title #191919`,
+`--muted #6B6B6B`, `--rule #E6E3DA`, `--accent #1A8917` (verde "lido"). Fontes:
+**Fraunces** (display/serif de título), **Source Serif 4** (corpo), **Inter** (rótulos/UI sans).
 
-### O ponto de decisão crítico
-O tema Medium é **monocromático** (preto sobre creme). O guia depende de **4 cores funcionais**.
-Não jogue fora a codificação de cor — traduza-a. Duas rotas possíveis (proponha e mostre 1, não as duas):
+**Elementos-assinatura** (repensados no vocabulário editorial, sem neon): a **"equação química"**
+da plasticidade (cap. 01) e as **curvas SVG** de abertura — pico↔linha-de-base da dopamina (02),
+o laço prever→agir→comparar→atualizar (03) e as curvas "por quê × como" que se cruzam (04). São
+tipográficos/em linha, não brilhantes.
 
-1. **Acentos discretos** (recomendado): manter fundo creme + serifa preta do Medium, mas usar
-   versões *dessaturadas/terrosas* das 4 cores só em detalhes pequenos (filete lateral de callout,
-   marcador de lista, número da seção, traço do SVG). O corpo fica preto-sobre-creme, fiel ao Medium.
-2. **Tipográfico puro**: abandonar cor e recodificar a função via **hierarquia tipográfica**
-   (itálico, small-caps, rótulos monoespaçados, filetes). Mais fiel ao Medium, mas perde o
-   "mapa de cores" que ajuda a memorizar. Só siga por aqui se o usuário pedir.
+Classes úteis: `.chapter`, `.ch-kicker`, `.ch-sub`, `.ch-actions`; `.equation`/`.term`/`.op`;
+`.curve` (wrapper de SVG) + `.c-cap` (legenda); `.duo`/`.d-card` (`.plastic`/`.fixed`);
+callouts via classe (`key`/`apply`/`warn`/`term`); `.lead`. A sidebar usa `.toc` (`.t-num`,
+`.t-title`, `.t-tag`, `.t-read`).
 
-### Regras do reskin
-- **Siga o brief do Medium à risca.** Ele foi pedido explicitamente — creme + serifa é a escolha
-  do cliente, não um default a ser "melhorado". Não troque por outra estética.
-- Preserve **toda a estrutura, o conteúdo e a interatividade** (flashcards, scroll-spy, progresso).
-  É um *reskin*, não uma reescrita.
-- Mantenha acessível: responsivo até mobile, foco de teclado visível, `prefers-reduced-motion`.
-- Os elementos-assinatura (equação e curva) devem ser **repensados no vocabulário do Medium**
-  (provavelmente mais tipográficos e com menos brilho), não só recoloridos.
+## Regras ao mexer aqui
+- É um **artefato editável pelo usuário final**, não só um documento. Preserve o CRUD, o scroll-spy,
+  a busca, o progresso e o merge de semente — não quebre o contrato do `localStorage`.
+- Mantenha acessível: responsivo até mobile, foco de teclado visível, `prefers-reduced-motion`,
+  `aria-label` nos SVGs.
+- Mantenha o tema editorial (creme + serifa). Se for mudar visual, é *reskin* — não reescrita.
+- **Conteúdo novo ou editado no `<template id="seed">` só aparece pra quem não tem `localStorage`
+  salvo** (ou como capítulo-semente novo com `data-key` inédito). Ao testar mudanças de conteúdo,
+  limpe o `localStorage` do site ou use aba anônima.
 
-### Como pré-visualizar
+## Como pré-visualizar
 ```bash
-# qualquer um destes:
-python3 -m http.server 8000      # abre http://localhost:8000
+python3 -m http.server 8000      # http://localhost:8000
 # ou apenas abra index.html no navegador
 ```
-Peça ao Claude Code para tirar screenshots enquanto itera (ele consegue rodar um headless).
+Peça ao Claude Code para tirar screenshots enquanto itera (ele roda um headless).
 
 ## Fontes / precisão
-Números e estudos já estão conferidos e embutidos em `index.html` (ver a seção "Fontes" no fim do
-arquivo e `reference/sources.md`). **Não invente dados novos**; se precisar acrescentar, verifique.
+Números e estudos estão conferidos e embutidos no conteúdo (ver `reference/sources.md` e as
+transcrições em `reference/transcripts/`). **Não invente dados novos**; se precisar acrescentar,
+verifique.
